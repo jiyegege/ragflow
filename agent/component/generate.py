@@ -124,11 +124,16 @@ class Generate(ComponentBase):
 
             cpn = self._canvas.get_component(component_id)["obj"]
             if cpn.component_name.lower() == "answer":
-                kwargs[para["key"]] = self._canvas.get_history(1)[0]["content"]
+                hist = self._canvas.get_history(1)
+                if hist:
+                    hist = hist[0]["content"]
+                else:
+                    hist = ""
+                kwargs[para["key"]] = hist
                 continue
             _, out = cpn.output(allow_partial=False)
             if "content" not in out.columns:
-                kwargs[para["key"]] = "Nothing"
+                kwargs[para["key"]] = ""
             else:
                 if cpn.component_name.lower() == "retrieval":
                     retrieval_res.append(out)
@@ -140,7 +145,7 @@ class Generate(ComponentBase):
         else: retrieval_res = pd.DataFrame([])
 
         for n, v in kwargs.items():
-            prompt = re.sub(r"\{%s\}" % re.escape(n), re.escape(str(v)), prompt)
+            prompt = re.sub(r"\{%s\}" % re.escape(n), str(v).replace("\\", " "), prompt)
 
         if not self._param.inputs and prompt.find("{input}") >= 0:
             retrieval_res = self.get_input()

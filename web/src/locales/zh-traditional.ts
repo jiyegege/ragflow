@@ -565,6 +565,7 @@ export default {
       refuse: '拒絕',
       teamMembers: '團隊成員',
       joinedTeams: '加入的團隊',
+      sureDelete: '您確定刪除該成員嗎？',
     },
     message: {
       registered: '註冊成功',
@@ -712,7 +713,7 @@ export default {
       bingDescription:
         '此元件用於從 https://www.bing.com/ 取得搜尋結果。通常，它充當知識庫的補充。 Top N 和 Bing Subscription-Key 指定您需要適配的搜尋結果數量。',
       apiKey: 'API KEY',
-      country: '國家',
+      country: '國家和地區',
       language: '語言',
       googleScholar: '谷歌學術',
       googleScholarDescription: `該元件用於從 https://scholar.google.com/ 取得搜尋結果。通常，它充當知識庫的補充。 Top N 指定您需要調整的搜尋結果的數量。`,
@@ -997,6 +998,8 @@ export default {
       optional: '可選項',
       pasteFileLink: '貼上文件連結',
       testRun: '試運行',
+      template: '模板轉換',
+      templateDescription: '此元件用於排版各種元件的輸出。 ',
     },
     footer: {
       profile: '“保留所有權利 @ react”',

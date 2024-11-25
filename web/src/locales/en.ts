@@ -2,7 +2,7 @@ export default {
   translation: {
     common: {
       delete: 'Delete',
-      deleteModalTitle: 'Are you sure delete this item?',
+      deleteModalTitle: 'Are you sure to delete this item?',
       ok: 'Yes',
       cancel: 'No',
       total: 'Total',
@@ -61,8 +61,8 @@ export default {
       register: 'Register',
       signin: 'Sign in',
       home: 'Home',
-      setting: '用户设置',
-      logout: '登出',
+      setting: 'User settings',
+      logout: 'Log out',
       fileManager: 'File Management',
       flow: 'Agent',
       search: 'Search',
@@ -105,10 +105,10 @@ export default {
         'Conduct a retrieval test to check if RAGFlow can recover the intended content for the LLM.',
       similarityThreshold: 'Similarity threshold',
       similarityThresholdTip:
-        "RAGFlow employs either a combination of weighted keyword similarity and weighted vector cosine similarity, or a combination of weighted keyword similarity and weighted reranking score during retrieval. This parameter sets the threshold for similarities between the user query and chunks. Any chunk with a similarity score below this threshold will be excluded from the results.",
+        'RAGFlow employs either a combination of weighted keyword similarity and weighted vector cosine similarity, or a combination of weighted keyword similarity and weighted reranking score during retrieval. This parameter sets the threshold for similarities between the user query and chunks. Any chunk with a similarity score below this threshold will be excluded from the results.',
       vectorSimilarityWeight: 'Keywords similarity weight',
       vectorSimilarityWeightTip:
-        "This sets the weight of keyword similarity in the combined similarity score, either used with vector cosine similarity or with reranking score. The total of the two weights must equal 1.0.",
+        'This sets the weight of keyword similarity in the combined similarity score, either used with vector cosine similarity or with reranking score. The total of the two weights must equal 1.0.',
       testText: 'Test text',
       testTextPlaceholder: 'Input your question here!',
       testingLabel: 'Testing',
@@ -439,6 +439,7 @@ The above is the content you need to summarize.`,
       multiTurnTip:
         'In multi-round conversations, the query to the knowledge base is optimized. The large model will be called to consume additional tokens.',
       howUseId: 'How to use chat ID?',
+      description: 'Description of assistant',
     },
     setting: {
       profile: 'Profile',
@@ -593,10 +594,11 @@ The above is the content you need to summarize.`,
       updateDate: 'Update Date',
       role: 'Role',
       invite: 'Invite',
-      agree: 'Agree',
-      refuse: 'Refuse',
+      agree: 'Accept',
+      refuse: 'Decline',
       teamMembers: 'Team Members',
       joinedTeams: 'Joined Teams',
+      sureDelete: 'Are you sure to remove this member?',
     },
     message: {
       registered: 'Registered!',
@@ -747,7 +749,7 @@ The above is the content you need to summarize.`,
       bingDescription:
         'This component is used to get search result from https://www.bing.com/. Typically, it performs as a supplement to knowledgebases. Top N and Bing Subscription-Key specifies the number of search results you need to adapt.',
       apiKey: 'API KEY',
-      country: 'Country',
+      country: 'Country&Region',
       language: 'Language',
       googleScholar: 'Google Scholar',
       googleScholarDescription:
@@ -1037,6 +1039,9 @@ The above is the content you need to summarize.`,
       optional: 'Optional',
       pasteFileLink: 'Paste file link',
       testRun: 'Test Run',
+      template: 'Template',
+      templateDescription:
+        'This component is used for typesetting the outputs of various components.',
     },
     footer: {
       profile: 'All rights reserved @ React',

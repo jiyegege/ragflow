@@ -120,7 +120,10 @@ def run():
             try:
                 for ans in canvas.run(stream=True):
                     if ans.get("running_status"):
-                        yield "data:" + json.dumps({"code": 0, "message": "", "data": ans}, ensure_ascii=False) + "\n\n"
+                        yield "data:" + json.dumps({"code": 0, "message": "",
+                                                    "data": {"answer": ans["content"],
+                                                             "running_status": True}},
+                                                   ensure_ascii=False) + "\n\n"
                         continue
                     for k in ans.keys():
                         final_ans[k] = ans[k]
@@ -134,6 +137,8 @@ def run():
                 cvs.dsl = json.loads(str(canvas))
                 UserCanvasService.update_by_id(req["id"], cvs.to_dict())
             except Exception as e:
+                cvs.dsl = json.loads(str(canvas))
+                UserCanvasService.update_by_id(req["id"], cvs.to_dict())
                 traceback.print_exc()
                 yield "data:" + json.dumps({"code": 500, "message": str(e),
                                             "data": {"answer": "**ERROR**: " + str(e), "reference": []}},

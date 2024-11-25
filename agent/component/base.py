@@ -385,10 +385,14 @@ class ComponentBase(ABC):
         """
         return """{{
             "component_name": "{}",
-            "params": {}
+            "params": {},
+            "output": {},
+            "inputs": {}
         }}""".format(self.component_name,
-                     self._param
-                     )
+                     self._param,
+                     json.dumps(json.loads(str(self._param)).get("output", {}), ensure_ascii=False),
+                     json.dumps(json.loads(str(self._param)).get("inputs", []), ensure_ascii=False)
+        )
 
     def __init__(self, canvas, id, param: ComponentParamBase):
         self._canvas = canvas
@@ -454,7 +458,7 @@ class ComponentBase(ABC):
             outs = []
             for q in self._param.query:
                 if q["component_id"]:
-                    if q["component_id"].split("@")[0].lower().find("begin") > 0:
+                    if q["component_id"].split("@")[0].lower().find("begin") >= 0:
                         cpn_id, key = q["component_id"].split("@")
                         for p in self._canvas.get_component(cpn_id)["obj"]._param.query:
                             if p["key"] == key:

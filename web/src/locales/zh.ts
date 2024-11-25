@@ -437,6 +437,7 @@ export default {
       multiTurnTip:
         '在多轮对话的中，对去知识库查询的问题进行优化。会调用大模型额外消耗token。',
       howUseId: '如何使用聊天ID？',
+      description: '助理描述',
     },
     setting: {
       profile: '概要',
@@ -584,6 +585,7 @@ export default {
       refuse: '拒绝',
       teamMembers: '团队成员',
       joinedTeams: '加入的团队',
+      sureDelete: '您确定要删除该成员吗？',
     },
     message: {
       registered: '注册成功',
@@ -732,7 +734,7 @@ export default {
       bingDescription:
         '此组件用于从 https://www.bing.com/ 获取搜索结果。通常，它作为知识库的补充。Top N 和 Bing Subscription-Key 指定您需要调整的搜索结果数量。',
       apiKey: 'API KEY',
-      country: '国家',
+      country: '国家和地区',
       language: '语言',
       googleScholar: '谷歌学术',
       googleScholarDescription: `此组件用于从 https://scholar.google.com/ 获取搜索结果。通常，它作为知识库的补充。Top N 指定您需要调整的搜索结果数量。`,
@@ -1017,6 +1019,8 @@ export default {
       optional: '可选项',
       pasteFileLink: '粘贴文件链接',
       testRun: '试运行',
+      template: '模板转换',
+      templateDescription: '该组件用于排版各种组件的输出。',
     },
     footer: {
       profile: 'All rights reserved @ React',
