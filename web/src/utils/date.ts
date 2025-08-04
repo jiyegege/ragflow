@@ -25,3 +25,21 @@ export function lastDay() {
 export function lastWeek() {
   return formatDate(dayjs().subtract(1, 'weeks'));
 }
+
+export function formatPureDate(date: any) {
+  if (!date) {
+    return '';
+  }
+  return dayjs(date).format('DD/MM/YYYY');
+}
+
+export function formatStandardDate(date: any) {
+  if (!date) {
+    return '';
+  }
+  const parsedDate = dayjs(date);
+  if (!parsedDate.isValid()) {
+    return '';
+  }
+  return parsedDate.format('YYYY-MM-DD');
+}

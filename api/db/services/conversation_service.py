@@ -23,6 +23,8 @@ from api.db.services.dialog_service import DialogService, chat
 from api.utils import get_uuid
 import json
 
+from rag.prompts import chunks_format
+
 
 class ConversationService(CommonService):
     model = Conversation
@@ -53,18 +55,7 @@ def structure_answer(conv, ans, message_id, session_id):
         reference = {}
         ans["reference"] = {}
 
-    def get_value(d, k1, k2):
-        return d.get(k1, d.get(k2))
-
-    chunk_list = [{
-        "id": get_value(chunk, "chunk_id", "id"),
-        "content": get_value(chunk, "content", "content_with_weight"),
-        "document_id": get_value(chunk, "doc_id", "document_id"),
-        "document_name": get_value(chunk, "docnm_kwd", "document_name"),
-        "dataset_id": get_value(chunk, "kb_id", "dataset_id"),
-        "image_id": get_value(chunk, "image_id", "img_id"),
-        "positions": get_value(chunk, "positions", "position_int"),
-    } for chunk in reference.get("chunks", [])]
+    chunk_list = chunks_format(reference)
 
     reference["chunks"] = chunk_list
     ans["id"] = message_id
@@ -99,17 +90,18 @@ def completion(tenant_id, chat_id, question, name="New session", session_id=None
             "user_id": kwargs.get("user_id", "")
         }
         ConversationService.save(**conv)
-        yield "data:" + json.dumps({"code": 0, "message": "",
-                                    "data": {
-                                        "answer": conv["message"][0]["content"],
-                                        "reference": {},
-                                        "audio_binary": None,
-                                        "id": None,
-                                        "session_id": session_id
-                                    }},
-                                   ensure_ascii=False) + "\n\n"
-        yield "data:" + json.dumps({"code": 0, "message": "", "data": True}, ensure_ascii=False) + "\n\n"
-        return
+        if stream:
+            yield "data:" + json.dumps({"code": 0, "message": "",
+                                        "data": {
+                                            "answer": conv["message"][0]["content"],
+                                            "reference": {},
+                                            "audio_binary": None,
+                                            "id": None,
+                                            "session_id": session_id
+                                        }},
+                                    ensure_ascii=False) + "\n\n"
+            yield "data:" + json.dumps({"code": 0, "message": "", "data": True}, ensure_ascii=False) + "\n\n"
+            return
 
     conv = ConversationService.query(id=session_id, dialog_id=chat_id)
     if not conv:
@@ -132,6 +124,8 @@ def completion(tenant_id, chat_id, question, name="New session", session_id=None
     message_id = msg[-1].get("id")
     e, dia = DialogService.get_by_id(conv.dialog_id)
 
+    kb_ids = kwargs.get("kb_ids",[])
+    dia.kb_ids = list(set(dia.kb_ids + kb_ids))
     if not conv.reference:
         conv.reference = []
     conv.message.append({"role": "assistant", "content": "", "id": message_id})

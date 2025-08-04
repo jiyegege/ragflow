@@ -11,6 +11,10 @@ Key concepts, basic operations, a quick view of the agent editor.
 
 ## Key concepts
 
+:::danger DEPRECATED!
+A new version is coming soon.
+:::
+
 Agents and RAG are complementary techniques, each enhancing the other’s capabilities in business applications. RAGFlow v0.8.0 introduces an agent mechanism, featuring a no-code workflow editor on the front end and a comprehensive graph-based task orchestration framework on the back end. This mechanism is built on top of RAGFlow's existing RAG solutions and aims to orchestrate search technologies such as query intent classification, conversation leading, and query rewriting to:
 
 - Provide higher retrievals and,
@@ -22,8 +26,8 @@ Agents and RAG are complementary techniques, each enhancing the other’s capabi
 
 Before proceeding, ensure that:  
 
-1. You have properly set the LLM to use. See the guides on [Configure your API key](../llm_api_key_setup.md) or [Deploy a local LLM](../deploy_local_llm.mdx) for more information.
-2. You have a knowledge base configured and the corresponding files properly parsed. See the guide on [Configure a knowledge base](../configure_knowledge_base.md) for more information.
+1. You have properly set the LLM to use. See the guides on [Configure your API key](../models/llm_api_key_setup.md) or [Deploy a local LLM](../models/deploy_local_llm.mdx) for more information.
+2. You have a knowledge base configured and the corresponding files properly parsed. See the guide on [Configure a knowledge base](../dataset/configure_knowledge_base.md) for more information.
 
 :::
 

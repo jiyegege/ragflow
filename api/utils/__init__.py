@@ -15,6 +15,7 @@
 #
 import base64
 import datetime
+import hashlib
 import io
 import json
 import os
@@ -70,6 +71,28 @@ def show_configs():
             if "password" in v:
                 v = copy.deepcopy(v)
                 v["password"] = "*" * 8
+            if "access_key" in v:
+                v = copy.deepcopy(v)
+                v["access_key"] = "*" * 8
+            if "secret_key" in v:
+                v = copy.deepcopy(v)
+                v["secret_key"] = "*" * 8
+            if "secret" in v:
+                v = copy.deepcopy(v)
+                v["secret"] = "*" * 8
+            if "sas_token" in v:
+                v = copy.deepcopy(v)
+                v["sas_token"] = "*" * 8
+            if "oauth" in k:
+                v =  copy.deepcopy(v)
+                for key, val in v.items():
+                  if "client_secret" in val:
+                      val["client_secret"] = "*" * 8
+            if "authentication" in k:
+                v =  copy.deepcopy(v)
+                for key, val in v.items():
+                  if "http_secret_key" in val:
+                      val["http_secret_key"] = "*" * 8
         msg += f"\n\t{k}: {v}"
     logging.info(msg)
 
@@ -351,6 +374,26 @@ def decrypt(line):
         line), "Fail to decrypt password!").decode('utf-8')
 
 
+def decrypt2(crypt_text):
+    from base64 import b64decode, b16decode
+    from Crypto.Cipher import PKCS1_v1_5 as Cipher_PKCS1_v1_5
+    from Crypto.PublicKey import RSA
+    decode_data = b64decode(crypt_text)
+    if len(decode_data) == 127:
+        hex_fixed = '00' + decode_data.hex()
+        decode_data = b16decode(hex_fixed.upper())
+
+    file_path = os.path.join(
+        file_utils.get_project_base_directory(),
+        "conf",
+        "private.pem")
+    pem = open(file_path).read()
+    rsa_key = RSA.importKey(pem, "Welcome")
+    cipher = Cipher_PKCS1_v1_5.new(rsa_key)
+    decrypt_text = cipher.decrypt(decode_data, None)
+    return (b64decode(decrypt_text)).decode()
+
+
 def download_img(url):
     if not url:
         return ""
@@ -363,3 +406,7 @@ def download_img(url):
 def delta_seconds(date_string: str):
     dt = datetime.datetime.strptime(date_string, "%Y-%m-%d %H:%M:%S")
     return (datetime.datetime.now() - dt).total_seconds()
+
+
+def hash_str2int(line:str, mod: int=10 ** 8) -> int:
+    return int(hashlib.sha1(line.encode("utf-8")).hexdigest(), 16) % mod

@@ -7,7 +7,7 @@ import {
 } from '@/interfaces/request/document';
 import i18n from '@/locales/config';
 import chatService from '@/services/chat-service';
-import kbService from '@/services/knowledge-service';
+import kbService, { listDocument } from '@/services/knowledge-service';
 import api, { api_host } from '@/utils/api';
 import { buildChunkHighlights } from '@/utils/document-util';
 import { post } from '@/utils/request';
@@ -16,6 +16,7 @@ import { UploadFile, message } from 'antd';
 import { get } from 'lodash';
 import { useCallback, useMemo, useState } from 'react';
 import { IHighlight } from 'react-pdf-highlighter';
+import { useParams } from 'umi';
 import {
   useGetPaginationWithRouter,
   useHandleSearchChange,
@@ -61,6 +62,7 @@ export const useFetchNextDocumentList = () => {
   const { knowledgeId } = useGetKnowledgeSearchParams();
   const { searchString, handleInputChange } = useHandleSearchChange();
   const { pagination, setPagination } = useGetPaginationWithRouter();
+  const { id } = useParams();
 
   const { data, isFetching: loading } = useQuery<{
     docs: IDocumentInfo[];
@@ -69,9 +71,10 @@ export const useFetchNextDocumentList = () => {
     queryKey: ['fetchDocumentList', searchString, pagination],
     initialData: { docs: [], total: 0 },
     refetchInterval: 15000,
+    enabled: !!knowledgeId || !!id,
     queryFn: async () => {
-      const ret = await kbService.get_document_list({
-        kb_id: knowledgeId,
+      const ret = await listDocument({
+        kb_id: knowledgeId || id,
         keywords: searchString,
         page_size: pagination.pageSize,
         page: pagination.current,
@@ -119,10 +122,11 @@ export const useSetNextDocumentStatus = () => {
       documentId,
     }: {
       status: boolean;
-      documentId: string;
+      documentId: string | string[];
     }) => {
+      const ids = Array.isArray(documentId) ? documentId : [documentId];
       const { data } = await kbService.document_change_status({
-        doc_id: documentId,
+        doc_ids: ids,
         status: Number(status),
       });
       if (data.code === 0) {
@@ -254,9 +258,6 @@ export const useUploadNextDocument = () => {
       try {
         const ret = await kbService.document_upload(formData);
         const code = get(ret, 'data.code');
-        if (code === 0) {
-          message.success(i18n.t('message.uploaded'));
-        }
 
         if (code === 0 || code === 500) {
           queryClient.invalidateQueries({ queryKey: ['fetchDocumentList'] });
@@ -264,7 +265,10 @@ export const useUploadNextDocument = () => {
         return ret?.data;
       } catch (error) {
         console.warn(error);
-        return {};
+        return {
+          code: 500,
+          message: error + '',
+        };
       }
     },
   });
@@ -322,6 +326,10 @@ export const useRunNextDocument = () => {
       run: number;
       shouldDelete: boolean;
     }) => {
+      queryClient.invalidateQueries({
+        queryKey: ['fetchDocumentList'],
+      });
+
       const ret = await kbService.document_run({
         doc_ids: documentIds,
         run,
@@ -342,12 +350,17 @@ export const useRunNextDocument = () => {
 
 export const useFetchDocumentInfosByIds = () => {
   const [ids, setDocumentIds] = useState<string[]>([]);
+
+  const idList = useMemo(() => {
+    return ids.filter((x) => typeof x === 'string' && x !== '');
+  }, [ids]);
+
   const { data } = useQuery<IDocumentInfo[]>({
-    queryKey: ['fetchDocumentInfos', ids],
-    enabled: ids.length > 0,
+    queryKey: ['fetchDocumentInfos', idList],
+    enabled: idList.length > 0,
     initialData: [],
     queryFn: async () => {
-      const { data } = await kbService.document_infos({ doc_ids: ids });
+      const { data } = await kbService.document_infos({ doc_ids: idList });
       if (data.code === 0) {
         return data.data;
       }

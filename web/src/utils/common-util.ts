@@ -1,3 +1,4 @@
+import { LLMFactory } from '@/constants/llm';
 import { IFactory } from '@/interfaces/database/llm';
 import isObject from 'lodash/isObject';
 import snakeCase from 'lodash/snakeCase';
@@ -6,7 +7,7 @@ export const isFormData = (data: unknown): data is FormData => {
   return data instanceof FormData;
 };
 
-const excludedFields = ['img2txt_id'];
+const excludedFields = ['img2txt_id', 'mcpServers'];
 
 const isExcludedField = (key: string) => {
   return excludedFields.includes(key);
@@ -36,11 +37,13 @@ export const formatNumberWithThousandsSeparator = (numberStr: string) => {
 };
 
 const orderFactoryList = [
-  'OpenAI',
-  'Moonshot',
-  'ZHIPU-AI',
-  'Ollama',
-  'Xinference',
+  LLMFactory.OpenAI,
+  LLMFactory.Moonshot,
+  LLMFactory.PPIO,
+  LLMFactory.ZhipuAI,
+  LLMFactory.Ollama,
+  LLMFactory.Xinference,
+  LLMFactory.Ai302,
 ];
 
 export const sortLLmFactoryListBySpecifiedOrder = (list: IFactory[]) => {
