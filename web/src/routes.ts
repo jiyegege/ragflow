@@ -11,6 +11,7 @@ export enum Routes {
   AgentList = '/agent-list',
   Searches = '/next-searches',
   Search = '/next-search',
+  SearchShare = '/next-search/share',
   Chats = '/next-chats',
   Chat = '/next-chat',
   Files = '/files',
@@ -214,7 +215,7 @@ const routes = [
     ],
   },
   {
-    path: Routes.Chat,
+    path: Routes.Chat + '/:id',
     layout: false,
     component: `@/pages${Routes.Chats}/chat`,
   },
@@ -230,9 +231,14 @@ const routes = [
     ],
   },
   {
-    path: Routes.Search,
+    path: `${Routes.Search}/:id`,
     layout: false,
     component: `@/pages${Routes.Search}`,
+  },
+  {
+    path: `${Routes.SearchShare}`,
+    layout: false,
+    component: `@/pages${Routes.SearchShare}`,
   },
   {
     path: Routes.Agents,

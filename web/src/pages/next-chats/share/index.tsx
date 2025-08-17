@@ -50,7 +50,8 @@ const ChatContainer = () => {
     handleInputChange,
     value,
     sendLoading,
-    ref,
+    scrollRef,
+    messageContainerRef,
     derivedMessages,
     hasError,
     stopOutputMessage,
@@ -59,6 +60,7 @@ const ChatContainer = () => {
     parameterDialogVisible,
     showParameterDialog,
     sendFormMessage,
+    addNewestOneAnswer,
     ok,
     resetSession,
   } = useSendNextSharedMessage(addEventList);
@@ -74,6 +76,7 @@ const ChatContainer = () => {
     avatar: '',
     title: '',
     inputs: {},
+    prologue: '',
   });
   const handleUploadFile: NonNullable<FileUploadProps['onUpload']> =
     useCallback(
@@ -96,8 +99,17 @@ const ChatContainer = () => {
       avatar,
       title,
       inputs: inputs,
+      prologue: '',
     });
   }, [inputsData, setAgentInfo]);
+
+  React.useEffect(() => {
+    if (inputsData.prologue) {
+      addNewestOneAnswer({
+        answer: inputsData.prologue,
+      });
+    }
+  }, [inputsData.prologue, addNewestOneAnswer]);
 
   React.useEffect(() => {
     if (inputsData && inputsData.inputs && !isEmpty(inputsData.inputs)) {
@@ -149,6 +161,7 @@ const ChatContainer = () => {
             className={cn(
               'flex flex-1 flex-col overflow-auto scrollbar-auto m-auto w-5/6',
             )}
+            ref={messageContainerRef}
           >
             <div>
               {derivedMessages?.map((message, i) => {
@@ -203,7 +216,7 @@ const ChatContainer = () => {
                 );
               })}
             </div>
-            <div ref={ref.scrollRef} />
+            <div ref={scrollRef} />
           </div>
           <div className="flex w-full justify-center mb-8">
             <div className="w-5/6">
