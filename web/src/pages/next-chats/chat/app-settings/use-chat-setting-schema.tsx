@@ -1,9 +1,12 @@
-import { LlmSettingSchema } from '@/components/llm-setting-items/next';
+import {
+  LlmSettingEnabledSchema,
+  LlmSettingFieldSchema,
+} from '@/components/llm-setting-items/next';
+import { MetadataFilterSchema } from '@/components/metadata-filter';
 import { rerankFormSchema } from '@/components/rerank';
 import { vectorSimilarityWeightSchema } from '@/components/similarity-slider';
 import { topnSchema } from '@/components/top-n-item';
 import { useTranslate } from '@/hooks/common-hooks';
-import { omit } from 'lodash';
 import { z } from 'zod';
 
 export function useChatSettingSchema() {
@@ -39,22 +42,12 @@ export function useChatSettingSchema() {
     }),
     prompt_config: promptConfigSchema,
     ...rerankFormSchema,
-    llm_setting: z.object(omit(LlmSettingSchema, 'llm_id')),
+    llm_setting: z.object(LlmSettingFieldSchema),
+    ...LlmSettingEnabledSchema,
     llm_id: z.string().optional(),
     ...vectorSimilarityWeightSchema,
     ...topnSchema,
-    meta_data_filter: z
-      .object({
-        method: z.string().optional(),
-        manual: z.array(
-          z.object({
-            key: z.string(),
-            op: z.string(),
-            value: z.string(),
-          }),
-        ),
-      })
-      .optional(),
+    ...MetadataFilterSchema,
   });
 
   return formSchema;
